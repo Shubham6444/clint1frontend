@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -40,9 +40,16 @@ export default function BuyPlan() {
     utrNumber: "",
   })
 
-  // const upiUrl = `upi://pay?pa=you@upi&pn=YourName&am=${plan?.price || 100}&cu=INR`
-const upiUrl = `upi://pay?pa=BHARATPE.8W0V0G8J0B12014@fbpe&pn=BharatPe%20Merchant&am=${plan?.price || 100}&cu=INR&tn=Pay`;
+  const upiUrl = `upi://pay?pa=BHARATPE.8W0V0G8J0B12014@fbpe&pn=BharatPe%20Merchant&am=${plan?.price || 100}&cu=INR&tn=Pay`;
 
+  const fetchPlan = useCallback(async () => {
+    try {
+      const data = await api.getPlan(planId)
+      setPlan(data)
+    } catch (error) {
+      setError("Failed to load plan details")
+    }
+  }, [planId])
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -53,24 +60,7 @@ const upiUrl = `upi://pay?pa=BHARATPE.8W0V0G8J0B12014@fbpe&pn=BharatPe%20Merchan
     if (planId) {
       fetchPlan()
     }
-  }, [planId, isAuthenticated])
-
-  const fetchPlan = async () => {
-    try {
-      const data = await api.getPlan(planId)
-      setPlan(data)
-
-      if (data.name.includes("10K")) {
-        // setFormData((prev) => ({ ...prev, utrNumber: "10000" }))
-      } else if (data.name.includes("100K")) {
-        // setFormData((prev) => ({ ...prev, utrNumber: "100000" }))
-      } else if (data.name.includes("1M")) {
-        // setFormData((prev) => ({ ...prev, utrNumber: "1000000" }))
-      }
-    } catch (error) {
-      setError("Failed to load plan details")
-    }
-  }
+  }, [isAuthenticated, planId, fetchPlan, router])
 
   const validateYouTubeUrl = (url) => {
     const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/(channel\/|c\/|user\/)|youtu\.be\/)/
@@ -176,7 +166,7 @@ const upiUrl = `upi://pay?pa=BHARATPE.8W0V0G8J0B12014@fbpe&pn=BharatPe%20Merchan
               <div className="space-y-3">
                 <h4 className="font-semibold text-white">What you get:</h4>
                 <ul className="space-y-2">
-                  {plan.features.map((feature, index) => (
+                  {plan.features?.map((feature, index) => (
                     <li key={index} className="text-white/90 text-sm flex items-center gap-3">
                       <CheckCircle className="w-4 h-4 text-green-400" />
                       {feature}
@@ -266,7 +256,7 @@ const upiUrl = `upi://pay?pa=BHARATPE.8W0V0G8J0B12014@fbpe&pn=BharatPe%20Merchan
 
               <Dialog>
                 <DialogTrigger asChild>
-                  <Button className="w-full bg-gradient-to-r from-green-600 to-green-600 text-white"  onClick={handleDealCreate}>
+                  <Button className="w-full bg-gradient-to-r from-green-600 to-green-600 text-white" onClick={handleDealCreate}>
                     <CreditCard className="w-4 h-4 mr-2" />
                     Pay Now
                   </Button>
