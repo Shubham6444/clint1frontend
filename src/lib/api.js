@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://clint1backend-production.up.railway.app/api";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "https://lssrz1rm-5000.inc1.devtunnels.ms/api"
 // http://localhost:5000/api"
 
 class ApiClient {

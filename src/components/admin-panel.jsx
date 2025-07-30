@@ -52,7 +52,7 @@ const router = useRouter()
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
   const [userPurchases, setUserPurchases] = useState([])
- const api_url ="https://clint1backend-production.up.railway.app/api";
+ const api_url ="https://lssrz1rm-5000.inc1.devtunnels.ms/";
   useEffect(() => {
   const checkAdminAndFetchData = async () => {
     setLoading(true)
